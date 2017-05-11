@@ -30,7 +30,7 @@ class Sql extends PDO{
 			//Como eu quero o código mais dinâmico, eu criei um novo método para fazer o set dos dados. O método abaixo. enão vou comentar esse código:
 			//$statement->bindParam($key, $value);
 		//E, aqui vai o setParam, que é o método que eu criei:
-			$this->setParam($key, $value);
+			$this->setParam($statement, $key, $value);
 		}
 
 	}
