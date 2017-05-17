@@ -43,12 +43,42 @@ echo $user2;
 //$search = Usuario::search("us");
 //echo json_encode($search);
 
-//NESSE, CARREGA O USUÁRIO USANDO O LOGIN E A SENHA
+//NESTE, CARREGA O USUÁRIO USANDO O LOGIN E A SENHA
 //Estamos chamando o método login que está na classe Usuario
-$usuario = new Usuario();
+//$usuario = new Usuario();
 //Ele espera o login e a senha. É isso que vai dentro do parênteses
-$usuario->login("user2", "&%!@123");
+//$usuario->login("user2", "&%!@123");
 //Fazendo um echo do $usuário, ele executa um __toString e retorna um json na tela
+//echo $usuario;
+
+//AQUI VAMOS FAZER UM INSERT DE UM USUARIO NOVO
+//$aluno = new Usuario();
+//Vou dizer que o login é aluno 
+//$aluno->setDeslogin("aluno");
+//$aluno->setDessenha("@lun0");
+//Para enviar para o banco de dados
+//Preciamos chamar o método INSERT que criamos, se não ele fica só no objeto
+//Ele vai mostrar o ID e o DTCADASTRO porque nós pedimos para que ele fizesse isso via procedure (no banco de dados), que está la no método insert
+//$aluno->insert();
+//Aqui vamos jogar as informações do banco na tela via json
+//echo $aluno;
+
+//AQUI VAMOS FAZER UM INSERT DE UM USUARIO NOVO - VIA MÉTODO CONSTRUTOR
+//O login e a senha do aluno vem dentro do método construtor
+//$aluno = new Usuario("aluno", "@lun0");
+
+//$aluno->insert();
+//Aqui vamos jogar as informações do banco na tela via json
+//echo $aluno;
+//Quando usar esse método contrutor, você DEVE PASSAR o usuário e a senha TODA VEZ que vc instanciar o objeto Usuario.
+
+//AQUI VAMOS FAZER UM UPDATE
+$usuario = new Usuario();
+//Precisamos carregar antes. Se nós queremos atualizar, é preciso existir esse registro.
+$usuario->loadById(8);
+//Carregamos o usuario 8, agora vamos atualizar. Preciso passar o login e a senha
+$usuario->update("Professor","12893473");
+
 echo $usuario;
 
 ?>

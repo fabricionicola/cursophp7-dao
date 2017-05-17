@@ -55,15 +55,10 @@ class Usuario {
 //Agora vamos validar o resultado. Porque pode ser que ele busque por um ID que o banco da dados não possui. Então, Se $results, isset(existe), no índice 0 ele tem um resultdo. Ou pode ser feito como a próxim linha comentada:
 		//if (isset($results[0]))
 		if (count($results)>0){
-			//Crio uma variável para pegar os resultados da linha 0
-			$row = $results[0];
 
-			//Vou pegar os dados que me voltou via associativo e mandar para os setters. 
-			$this->setIdusuario($row['idusuario']);
-			$this->setDeslogin($row['deslogin']);
-			$this->setDessenha($row['dessenha']);
-			//Para o php já colocar no padrão data e hora, vamos instanciar a classe nativa DateTime.
-			$this->setDtcadastro(new DateTime($row['dtcadastro']));
+			//Quando obtemos o registro, nós vamos chamar o método setData, passando o results com índex 0
+			//Crio uma variável para pegar os resultados da linha 0
+			$this->setData($results[0]);
 		}
 		
 	}
@@ -109,18 +104,76 @@ class Usuario {
 //Se trouxer um usuário de fato, ele entra no IF e executa os setters
 //Se não trouxer um usuário, ele cai no else
 		if (count($results)>0){
-			//Crio uma variável para pegar os resultados da linha 0
-			$row = $results[0];
 
-			//Vou pegar os dados que me voltou via associativo e mandar para os setters. 
-			$this->setIdusuario($row['idusuario']);
-			$this->setDeslogin($row['deslogin']);
-			$this->setDessenha($row['dessenha']);
-			$this->setDtcadastro(new DateTime($row['dtcadastro']));
+			//Quando obtemos o registro, nós vamos chamar o mpetod setData, passando o results com índex 0
+			//Crio uma variável para pegar os resultados da linha 0
+			$this->setData($results[0]);
+			
 		
 		} else {
 			throw new Exception("Login e/ou Senha Inválido(s).");
 		}
+
+	}
+//FUNÇÃO PARA SETAR OS DADOS - ELA RECEBE OS DADOS DO USUÁRIO
+	//Para não ficar repetindo essas linhas de código dentro dos métodos, estamos criando esse método, para simplificar
+//O setData vai receber o $data
+	public function setData($data){
+
+		$this->setIdusuario($data['idusuario']);
+		$this->setDeslogin($data['deslogin']);
+		$this->setDessenha($data['dessenha']);
+		$this->setDtcadastro(new DateTime($data['dtcadastro']));
+
+	}
+
+//AQUI VAMOS FAZER UM MÉTODO PARA INSERIR UM DADO NO BANCO DE DADOS - O MÉTODO INSERT
+	public function insert(){
+		$sql = new Sql();
+
+//Vamos fazer um select. O select vai trazer um resultado, por isso a variável results
+	//Aqui será criado uma procedure dentro do mysql. sp (storage procedure) usuarios(usuarios) insert (inserir)
+		//Ai vamos passar dois parâmetros: o login e a senha, pq o id ele vai gerar automático e a data é o padrão do sistema.
+		//Essa procedure vai ter que ser criada dentro do banco de dados, mais detalhes no bloco de notas desta pasta.
+		$results = $sql->select("CALL sp_usuarios_insert(:LOGIN, :PASSWORD)", array(
+			//Aqui especificamos da onde vem cada parâmetro
+			//O LOGIN vem do getDeslogin
+			':LOGIN'=>$this->getDeslogin(),
+			':PASSWORD'=>$this->getDessenha()
+//Pq estamos fazendo com o SELECT? Pq n final ela vai executar uma função que nos retorna com o ID gerado na tabela. Então, nós conseguimos trazer esses dados e colocar no nosso objeto.
+			));
+		if (count($results) > 0 ){
+			//Quando obtemos o registro, nós vamos chamar o mpetod setData, passando o results com índex 0
+			//Crio uma variável para pegar os resultados da linha 0
+			$this->setData($results[0]);
+		}
+
+	}
+
+//VAMOS INSERIR INFORMAÇÕES NO BANCO DE DADOS VIA MÉTODO CONSTRUTOR
+	//Estamos passando igualando o login e senha com "" para que não se torne obrigatório o login e senha a toda vez que o OBJETO usuario for instanciadao, pois se não houver login e senha, ele vai alimentar com um campo vazio 
+	public function __construct($login = "", $password = ""){
+		//Aqui vou chamar o setDeslogin e passar o $login e o mesmo para a senha.
+		$this->setDeslogin($login);
+		$this->setDessenha($password);
+
+	}
+
+//AQUI VAMOS CRIAR UM MÉTODO PARA UPDATE - ATUALIZAR
+	//Vamos passar como parametro o $login e $password, pois só são esses campos que quero alterar. 
+	public function update($login, $password){
+//Ele joga na memória, dentro dos atributos, em cima da classe, pega dos atributos e coloca dentro da query
+		$this->setDeslogin($login);
+		$this->setDessenha($password);
+
+		$sql = new Sql();
+//Aqui nés vamos fazer direto o Query, para executar direto no banco de dados.
+		//Vamos passar os parâmetros via array
+		$sql->query("UPDATE tb_usuarios SET deslogin = :LOGIN, dessenha = :PASSWORD WHERE idusuario = :ID", array(
+			':LOGIN'=>$this->getDeslogin(),
+			':PASSWORD'=>$this->getDessenha(),
+			':ID'=>$this->getIdusuario()
+			));
 
 	}
 
