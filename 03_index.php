@@ -73,12 +73,19 @@ echo $user2;
 //Quando usar esse método contrutor, você DEVE PASSAR o usuário e a senha TODA VEZ que vc instanciar o objeto Usuario.
 
 //AQUI VAMOS FAZER UM UPDATE
-$usuario = new Usuario();
+//$usuario = new Usuario();
 //Precisamos carregar antes. Se nós queremos atualizar, é preciso existir esse registro.
-$usuario->loadById(8);
+//$usuario->loadById(8);
 //Carregamos o usuario 8, agora vamos atualizar. Preciso passar o login e a senha
-$usuario->update("Professor","12893473");
+//$usuario->update("Professor","12893473");
+//echo $usuario;
+
+//AQUI ESTAMOS DELETANDO UM USUÁRIO
+$usuario = new Usuario();
+//Precisa carregar um usuário
+$usuario->loadById(7);
+//Chamamos o método do objeto Usuario
+$usuario->delete();
 
 echo $usuario;
-
 ?>

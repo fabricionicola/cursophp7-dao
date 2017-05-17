@@ -177,6 +177,23 @@ class Usuario {
 
 	}
 
+//AQUI VAMOS CRIAR UM MÉTODO PARA DELETAR
+	public function delete(){
+
+		$sql = new Sql();
+
+//Vamos deletar de acordo com o ID. Vamos passar o ID pelos parâmetros, via array
+//Aqui antes do FROM não vai "*" pq o * se refere à coluna, e aqui estamos deletando a linha
+		$sql->query('DELETE FROM tb_usuarios WHERE idusuario = :ID', array(
+			':ID'=>$this->getIdusuario()
+			));
+//Depois que apagamos do banco de dados, para que o objeto não fique guardando informações, vamos fazer o mesmo no objeto, deletar a informação.
+		$this->setIdusuario(0);
+		$this->setDeslogin("");
+		$this->setDessenha("");
+		$this->setDtcadastro(new DateTime());
+	}
+
 
 
 //ATÉ AGORA NÓS SÓ CARREGAMOS OS DADOS DO BANCO PARA O OBJETO.
